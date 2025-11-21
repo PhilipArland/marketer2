@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Dashboard</title>
+    <link href="assets/img/yeti.jpg" rel="icon">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar d-md-none px-2">
+        <button class="navbar-toggler border-0" type="button" id="mobileSidebarToggle">
+            <i class="bi bi-list display-6" style="color: var(--text-navbar);"></i>
+        </button>
+
+        <div class="profile mx-2">
+            <img id="nav-profile-img" src="assets/img/yeti.jpg" alt="Profile" class="img-fluid rounded-circle"
+                style="width: 40px; height: 40px; object-fit: cover;">
+        </div>
+    </nav>
+
+    <div id="mobileSidebar" class="mobile-sidebar"></div>
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div class="container-fluid p-2">
+        <div class="d-flex">
+            <div id="left-sidebar"
+                class="card cozy-card rounded-4 shadow-sm border-0 p-3 me-3 d-none d-md-flex flex-column">
+                <!-- Sidebar content here -->
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex-grow-1">
+                <div id="content" class="mt-0 mt-md-2">
+                    <!-- Dynamic content, such as settings.html, will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/settings.js"></script>
+</body>
+</html>
