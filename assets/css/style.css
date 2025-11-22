@@ -82,7 +82,7 @@ body {
 #left-sidebar {
     min-width: 260px;
     max-width: 260px;
-    height: 96vh;
+    height: 95.6vh;
     position: sticky;
     top: 16px;
     background-color: var(--bg-deep-brown);

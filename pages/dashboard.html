@@ -6,15 +6,20 @@
         }
 
         .report-area {
-            height: 60%;
+            height: 90%;
+            max-height: 100%;
             border-radius: .5rem;
             border: 2px solid rgba(212, 165, 116, 0.5);
         }
 
-        .welcome-db {
-            background-color: rgba(212, 165, 116, 0.1);
-            border-radius: .5rem;
+        .col-md-6.right-column {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 20px;
+            z-index: 10;
+            max-height: 100vh;
         }
+
     }
 </style>
 
@@ -37,8 +42,7 @@
                 <div class="col-md-6">
                     <div class="mb-3 d-flex justify-content-between gap-2">
                         <div class="report w-100 d-flex gap-3">
-                            <button id="btnCollection"
-                                class="btns btn-primary toggle-btn w-50">Collection</button>
+                            <button id="btnCollection" class="btns btn-primary toggle-btn w-50">Collection</button>
                             <button id="btnEmails" class="btns btn-primary toggle-btn w-50">Emails</button>
                             <button id="btnWebmails" class="btns btn-primary toggle-btn w-50">Webmails</button>
                             <!-- <button id="resetBtn" class="btns btn-danger w-50">
@@ -53,7 +57,8 @@
 
                         <!-- Country/State toggle -->
                         <div class="input-group mb-2">
-                            <button class="btns btn-primary toggle-collection" id="toggleColLocation" type="button">
+                            <button class="btns btn-primary toggle-collection me-1" id="toggleColLocation"
+                                type="button">
                                 <i class="bi bi-arrow-repeat"></i>
                             </button>
                             <input type="text" id="colLocation" class="form-control">
@@ -72,7 +77,8 @@
                         <h5 class="mb-3">Sending Emails</h5>
 
                         <div class="input-group mb-2">
-                            <button class="btns btn-primary toggle-collection" id="toggleEmailLocation" type="button">
+                            <button class="btns btn-primary toggle-collection me-1" id="toggleEmailLocation"
+                                type="button">
                                 <i class="bi bi-arrow-repeat"></i>
                             </button>
                             <input type="text" id="emailLocation" class="form-control">
@@ -89,7 +95,8 @@
                         <h5 class="mb-3">Sending Webmails</h5>
 
                         <div class="input-group mb-2">
-                            <button class="btns btn-primary toggle-collection" id="toggleWebmailLocation" type="button">
+                            <button class="btns btn-primary toggle-collection me-1" id="toggleWebmailLocation"
+                                type="button">
                                 <i class="bi bi-arrow-repeat"></i>
                             </button>
                             <input type="text" id="webmailLocation" class="form-control">
@@ -112,7 +119,7 @@
                 </div>
 
                 <!-- RIGHT COLUMN -->
-                <div class="col-md-6">
+                <div class="col-md-6 right-column mb-5 pb-2">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h5 class="mb-2">Generated Report</h5>
                         <button id="copyReportBtn" class="btns btn-primary">
@@ -124,6 +131,7 @@
                         <i class="bi bi-clipboard"></i> Copy Report
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
