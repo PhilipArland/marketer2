@@ -43,9 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (page === 'dashboard') {
             console.log("Dashboard page initialized");
         }
+        
+        if (page === 'webmails') {
+            console.log("Webmail page initialized");
+            initWebmailsPage();  // Ensure this is being called after the webmails page content is loaded
+        }
 
         if (page === 'settings') {
-            console.log("Calling initSettingsPage for settings...");
+            console.log("Settings page initialized");
             initSettingsPage();  // Ensure this is being called
         }
     }
@@ -129,5 +134,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load the default page (settings) when the page is loaded
-    loadPage('settings');
+    loadPage('webmails');
 });

@@ -1,5 +1,5 @@
 function initSettingsPage() {
-    console.log('Settings.js loaded!');  // Check if the script is loaded
+    // console.log('Settings.js loaded!'); 
 
     // Load user settings from localStorage if available
     function loadSettings() {
@@ -14,16 +14,16 @@ function initSettingsPage() {
         const email = localStorage.getItem('email');
         const website = localStorage.getItem('website');
 
-        console.log('Loaded username:', username);
-        console.log('Loaded profileImg:', profileImg);
-        console.log('Loaded subjectTemplate:', subjectTemplate);
-        console.log('Loaded bodyTemplate:', bodyTemplate);
-        console.log('Loaded fullName:', fullName);
-        console.log('Loaded companyName:', companyName);
-        console.log('Loaded address:', address);
-        console.log('Loaded contact:', contact);
-        console.log('Loaded email:', email);
-        console.log('Loaded website:', website);
+        // console.log('Loaded username:', username);
+        // console.log('Loaded profileImg:', profileImg);
+        // console.log('Loaded subjectTemplate:', subjectTemplate);
+        // console.log('Loaded bodyTemplate:', bodyTemplate);
+        // console.log('Loaded fullName:', fullName);
+        // console.log('Loaded companyName:', companyName);
+        // console.log('Loaded address:', address);
+        // console.log('Loaded contact:', contact);
+        // console.log('Loaded email:', email);
+        // console.log('Loaded website:', website);
 
         // Set the username in the input field if available
         const usernameField = document.getElementById('username');

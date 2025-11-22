@@ -1,0 +1,31 @@
+<div class="row g-2 g-md-3 webmail-page">
+    <div class="col-lg-12">
+        <div class="card cozy-card rounded-4 border-0 shadow-sm p-4">
+            <h5 class="settings-title mb-3"> <i class="bi bi-envelope-fill me-2"></i> Ez Webmail </h5>
+
+            <!-- Company Name Input -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Company Name</label>
+                <input type="text" id="companyInput" class="form-control rounded-3" placeholder="Enter company name...">
+            </div>
+
+            <!-- Email Subject -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email Subject</label>
+                <input type="text" id="emailSubject" class="form-control rounded-3" readonly>
+                <button class="btns btn-primary mt-2 w-100" id="copySubject">
+                    <i class="bi bi-clipboard"></i> Copy Subject
+                </button>
+            </div>
+
+            <!-- Email Body -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email Body</label>
+                <textarea id="emailBody" class="form-control rounded-3" rows="6" readonly></textarea>
+                <button class="btns btn-primary mt-2 w-100" id="copyBody">
+                    <i class="bi bi-clipboard"></i> Copy Body
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
