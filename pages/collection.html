@@ -6,14 +6,35 @@
             <div class="d-flex gap-2">
                 <div class="w-50">
                     <label class="fw-semibold mb-1">Country:</label>
-                    <input type="text" id="countryInput" class="form-control mb-3" placeholder="Enter country...">
+                    <input type="text" id="countryInput" class="form-control mb-3" placeholder="Enter Country">
                 </div>
                 <div class="w-50">
                     <label class="fw-semibold mb-1">Market Segment:</label>
-                    <input type="text" id="marketSegmentInput" class="form-control mb-3"
-                        placeholder="Enter Market Segment">
+                    <div class="d-flex gap-2 align-items-center justify-content-center">
+                        <input type="text" id="marketSegmentInput" class="form-control"
+                            placeholder="Enter Market Segment">
+                        <button type="button" id="toggleSecondSectionBtn" class="btn btn-dark btn-sm">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <!-- Second Country / Segment section -->
+            <div id="secondCountrySegment" class="d-flex gap-2 d-none">
+                <div class="w-50">
+                    <label class="fw-semibold mb-1">Next City and Country:</label>
+                    <input type="text" id="countryInput2" class="form-control mb-3" placeholder="Enter Next City and Country">
+                </div>
+                <div class="w-50">
+                    <label class="fw-semibold mb-1">2nd Market Segment:</label>
+                    <div class="d-flex gap-2 align-items-center justify-content-center">
+                        <input type="text" id="marketSegmentInput2" class="form-control"
+                            placeholder="Enter 2nd Market Segment">
+                    </div>
+                </div>
+            </div>
+
 
             <div class="d-flex align-items-center justify-content-between mb-1">
                 <label class="fw-semibold mb-0">Cities (1 per line):</label>

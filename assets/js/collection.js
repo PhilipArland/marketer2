@@ -1,7 +1,3 @@
-// collection.js
-
-// --- UTILITY FUNCTIONS ---
-
 /** Saves data to localStorage. */
 function saveToLocalStorage(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
@@ -24,11 +20,6 @@ function copyOutput() {
 }
 
 // --- CORE APPLICATION LOGIC ---
-
-/**
- * Helper to call both message update and data saving.
- * Used as the primary event handler for all interactive elements.
- */
 function updateAndSave() {
     updateGeneratedMessage();
     saveCollectionData();
@@ -39,29 +30,33 @@ function updateAndSave() {
  */
 function saveCollectionData() {
     const countryInput = document.getElementById('countryInput');
+    const countryInput2 = document.getElementById('countryInput2');
     const marketSegmentInput = document.getElementById('marketSegmentInput');
+    const marketSegmentInput2 = document.getElementById('marketSegmentInput2');
     const citiesInput = document.getElementById('citiesInput');
     const citiesWrapper = document.getElementById('citiesWrapper');
+    const secondSection = document.getElementById('secondCountrySegment');
 
-    const country = countryInput ? countryInput.value.trim() : '';
-    const marketSegment = marketSegmentInput ? marketSegmentInput.value.trim() : '';
-    // Store the raw input string for the textarea persistence
+    const country1 = countryInput ? countryInput.value.trim() : '';
+    const country2 = countryInput2 ? countryInput2.value.trim() : '';
+    const segment1 = marketSegmentInput ? marketSegmentInput.value.trim() : '';
+    const segment2 = marketSegmentInput2 ? marketSegmentInput2.value.trim() : '';
     const citiesInputString = citiesInput ? citiesInput.value : '';
 
-    // Get checkbox states
     const checkboxes = Array.from(document.querySelectorAll("#cityList input[type='checkbox']")).map(cb => cb.checked);
+    const isCitiesWrapperVisible = citiesWrapper ? citiesWrapper.style.display !== 'none' : true;
+    const isSecondSectionVisible = secondSection ? !secondSection.classList.contains('d-none') : false;
 
-    // Save to localStorage
-    saveToLocalStorage('collectionData', {
-        country,
-        marketSegment,
-        citiesInputString, // Save the raw textarea string
-        checkboxes,        // Save the checkbox states
-        isCitiesWrapperVisible: citiesWrapper ? citiesWrapper.style.display !== 'none' : true
-    });
-
-    // DEBUG: Console log to confirm saving
-    console.log("DEBUG: Data saved:", { country, marketSegment, checkboxes });
+    localStorage.setItem('collectionData', JSON.stringify({
+        country1,
+        country2,
+        segment1,
+        segment2,
+        citiesInputString,
+        checkboxes,
+        isCitiesWrapperVisible,
+        isSecondSectionVisible
+    }));
 }
 
 /**
@@ -83,20 +78,24 @@ function updateProgress(boxes) {
     progressBar.setAttribute('aria-valuenow', checked);
 }
 
-
 /**
  * Updates the generated message based on input and progress.
  */
 function updateGeneratedMessage() {
     const countryInput = document.getElementById('countryInput');
+    const countryInput2 = document.getElementById('countryInput2');
     const marketSegmentInput = document.getElementById('marketSegmentInput');
+    const marketSegmentInput2 = document.getElementById('marketSegmentInput2');
     const cityList = document.getElementById('cityList');
     const outputText = document.getElementById('outputText');
 
     if (!countryInput || !marketSegmentInput || !cityList || !outputText) return;
 
-    const country = countryInput.value.trim();
-    const marketSegment = marketSegmentInput.value.trim();
+    const country1 = countryInput.value.trim();
+    const country2 = countryInput2 ? countryInput2.value.trim() : '';
+    const segment1 = marketSegmentInput.value.trim();
+    const segment2 = marketSegmentInput2 ? marketSegmentInput2.value.trim() : '';
+
     const boxes = cityList.querySelectorAll("input[type='checkbox']");
     const labels = cityList.querySelectorAll(".form-check-label");
 
@@ -104,28 +103,33 @@ function updateGeneratedMessage() {
     let cityText = "N/A";
     let nextCityText = "";
 
-    // Find the last checked city and the city immediately following it.
+    // Find the last checked city
     const lastCheckedIndex = Array.from(boxes).map(cb => cb.checked).lastIndexOf(true);
 
     if (labels.length > 0) {
         if (lastCheckedIndex === -1) {
-            // No cities checked: reference the first city.
             cityText = labels[0].innerText;
             nextCityText = labels.length > 1 ? labels[1].innerText : "";
         } else {
-            // Reference the last checked city.
             cityText = labels[lastCheckedIndex].innerText;
-            // The next city is the one following the last checked city.
             nextCityText = (lastCheckedIndex + 1 < labels.length) ? labels[lastCheckedIndex + 1].innerText : "";
         }
     }
 
-    let message = `Hi, I have finished collecting company names and emails in ${cityText}, ${country} for ${marketSegment}. `;
-    if (nextCityText) {
-        message += `I will start collecting in ${nextCityText}, ${country} now.`;
-    }
-    message += `\n\n- ${username}`;
+    // Build message
+    let message = `Hi, I have finished collecting company names and emails in ${cityText}, ${country1} for ${segment1}. `;
 
+    // If Country 2 or Segment 2 is filled, override the next collection info
+    if (country2 || segment2) {
+        const nextCountry = country2 || country1;
+        const nextSegment = segment2 || segment1;
+        message += `I will start collecting in ${nextCountry} for ${nextSegment} now.`;
+    } else if (nextCityText) {
+        // Default behavior: next city in list
+        message += `I will start collecting in ${nextCityText}, ${country1} now.`;
+    }
+
+    message += `\n\n- ${username}`;
     outputText.value = message;
 
     // Update progress bar
@@ -148,11 +152,9 @@ function generateCityList(savedCheckboxes = []) {
 
     let html = '';
     cities.forEach((city, idx) => {
-        // Restore checked state using the saved array
         const isChecked = savedCheckboxes[idx] === true;
         const checkedAttribute = isChecked ? 'checked' : '';
 
-        // *** FIX: REMOVED INLINE onclick HANDLER ***
         html += `
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="city_${idx}" ${checkedAttribute}>
@@ -163,101 +165,94 @@ function generateCityList(savedCheckboxes = []) {
 
     cityList.innerHTML = html;
 
-    // *** NEW: Attach event listeners to the generated checkboxes ***
+    // Attach listeners to checkboxes
     const newlyCreatedBoxes = cityList.querySelectorAll("input[type='checkbox']");
     newlyCreatedBoxes.forEach(box => {
-        // Use the combined updateAndSave handler
-        box.addEventListener('click', updateAndSave);
+        box.addEventListener('click', () => {
+            updateProgress(newlyCreatedBoxes);
+            saveCollectionData();
+            updateGeneratedMessage();
+        });
     });
 
-    // Run update and save immediately after generation
-    updateAndSave();
-}
-
-
-// --- MAIN INITIALIZATION LOGIC ---
-
-/**
- * Loads saved data, populates inputs, and generates initial city list.
- */
-function loadAllData() {
-    const savedCollectionData = loadFromLocalStorage('collectionData');
-    const countryInput = document.getElementById('countryInput');
-    const marketSegmentInput = document.getElementById('marketSegmentInput');
-    const citiesInput = document.getElementById('citiesInput');
-
-    if (!countryInput || !marketSegmentInput || !citiesInput) return;
-
-    // 1. Restore input values
-    countryInput.value = savedCollectionData.country || '';
-    marketSegmentInput.value = savedCollectionData.marketSegment || '';
-    citiesInput.value = savedCollectionData.citiesInputString || '';
-
-    // 2. Generate city list and restore checkbox states
-    generateCityList(savedCollectionData.checkboxes || []);
-
-    // 3. Set the visibility of the cities section on page load
-    const citiesWrapper = document.getElementById('citiesWrapper');
-    const toggleCitiesBtn = document.getElementById('toggleCitiesBtn');
-
-    if (citiesWrapper && toggleCitiesBtn) {
-        const isVisible = savedCollectionData.isCitiesWrapperVisible !== undefined ? savedCollectionData.isCitiesWrapperVisible : true;
-        citiesWrapper.style.display = isVisible ? 'block' : 'none';
-        const icon = toggleCitiesBtn.querySelector('i');
-
-        if (icon) {
-            icon.classList.remove(isVisible ? 'bi-plus-lg' : 'bi-dash-lg');
-            icon.classList.add(isVisible ? 'bi-dash-lg' : 'bi-plus-lg');
-        }
-    }
-
-    // 4. Initial update of message/progress
+    updateProgress(newlyCreatedBoxes);
     updateGeneratedMessage();
 }
 
+// --- MAIN INITIALIZATION LOGIC ---
+function loadAllData() {
+    const saved = JSON.parse(localStorage.getItem('collectionData') || '{}');
+    const countryInput = document.getElementById('countryInput');
+    const countryInput2 = document.getElementById('countryInput2');
+    const marketSegmentInput = document.getElementById('marketSegmentInput');
+    const marketSegmentInput2 = document.getElementById('marketSegmentInput2');
+    const citiesInput = document.getElementById('citiesInput');
+    const citiesWrapper = document.getElementById('citiesWrapper');
+    const secondSection = document.getElementById('secondCountrySegment');
+    const toggleSecondSectionBtn = document.getElementById('toggleSecondSectionBtn');
 
-/**
- * Main initialization function for the collection page.
- * NOTE: This is intended to be called ONLY from main.js after content is injected.
- */
+    if (!countryInput || !marketSegmentInput || !citiesInput) return;
+
+    // Restore values
+    countryInput.value = saved.country1 || '';
+    if (countryInput2) countryInput2.value = saved.country2 || '';
+    marketSegmentInput.value = saved.segment1 || '';
+    if (marketSegmentInput2) marketSegmentInput2.value = saved.segment2 || '';
+    citiesInput.value = saved.citiesInputString || '';
+
+    // Restore checkbox states
+    generateCityList(saved.checkboxes || []);
+
+    // Restore second section visibility
+    if (secondSection && toggleSecondSectionBtn) {
+        if (saved.isSecondSectionVisible) {
+            secondSection.classList.remove('d-none');
+            toggleSecondSectionBtn.querySelector('i').classList.remove('bi-plus-lg');
+            toggleSecondSectionBtn.querySelector('i').classList.add('bi-dash-lg');
+        } else {
+            secondSection.classList.add('d-none');
+            toggleSecondSectionBtn.querySelector('i').classList.remove('bi-dash-lg');
+            toggleSecondSectionBtn.querySelector('i').classList.add('bi-plus-lg');
+        }
+    }
+
+    if (citiesWrapper) {
+        citiesWrapper.style.display = saved.isCitiesWrapperVisible !== false ? 'block' : 'none';
+    }
+}
+
 function initCollectionPage() {
     console.log('Collection.js loaded!');
 
-    // --- 1. Load Data ---
     loadAllData();
 
-    // --- 2. Setup Persistence Listeners for Static Inputs ---
     const countryInput = document.getElementById('countryInput');
+    const countryInput2 = document.getElementById('countryInput2');
     const marketSegmentInput = document.getElementById('marketSegmentInput');
+    const marketSegmentInput2 = document.getElementById('marketSegmentInput2');
     const citiesInput = document.getElementById('citiesInput');
     const generateCitiesBtn = document.getElementById('generateCitiesBtn');
     const toggleCitiesBtn = document.getElementById('toggleCitiesBtn');
+    const toggleSecondSectionBtn = document.getElementById('toggleSecondSectionBtn');
+    const secondSection = document.getElementById('secondCountrySegment');
 
-    // Attach updateAndSave to input events (Country, Market Segment, Cities Textarea)
+    // Input listeners
     if (countryInput) countryInput.addEventListener('input', updateAndSave);
+    if (countryInput2) countryInput2.addEventListener('input', updateAndSave);
     if (marketSegmentInput) marketSegmentInput.addEventListener('input', updateAndSave);
+    if (marketSegmentInput2) marketSegmentInput2.addEventListener('input', updateAndSave);
+    if (citiesInput) citiesInput.addEventListener('input', updateAndSave);
 
-    // Cities input listener MUST trigger a regeneration if the content changes
-    if (citiesInput) citiesInput.addEventListener('input', () => {
-        // On input, save the text but DON'T regenerate the list, only update the message.
-        // The user must click the 'Generate Cities' button to regenerate the checkboxes.
-        updateAndSave();
-    });
-
-    // Generate Cities Button listener
+    // Generate cities button
     if (generateCitiesBtn) {
-        generateCitiesBtn.addEventListener('click', () => {
-            // When the button is clicked, we regenerate the list, which internally calls updateAndSave
-            generateCityList();
-        });
+        generateCitiesBtn.addEventListener('click', () => generateCityList());
     }
 
-    // Toggle Button listener (logic is inside loadAllData and saveCollectionData)
+    // Toggle cities wrapper
     if (toggleCitiesBtn) {
         toggleCitiesBtn.addEventListener('click', () => {
             const citiesWrapper = document.getElementById('citiesWrapper');
             const icon = toggleCitiesBtn.querySelector('i');
-
             if (!citiesWrapper || !icon) return;
 
             const isVisible = citiesWrapper.style.display !== 'none';
@@ -267,6 +262,20 @@ function initCollectionPage() {
             icon.classList.toggle('bi-plus-lg');
 
             saveCollectionData();
+        });
+    }
+
+    // Toggle second section
+    if (toggleSecondSectionBtn && secondSection) {
+        toggleSecondSectionBtn.addEventListener('click', () => {
+            secondSection.classList.toggle('d-none');
+            const icon = toggleSecondSectionBtn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('bi-plus-lg');
+                icon.classList.toggle('bi-dash-lg');
+            }
+            saveCollectionData();
+            updateGeneratedMessage();
         });
     }
 }
