@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (page === 'dashboard') {
             console.log("Dashboard page initialized");
+            initDashboardPage();  // Ensure this is being called
         }
 
         if (page === 'collection') {
@@ -139,5 +140,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load the default page (settings) when the page is loaded
-    loadPage('collection');
+    loadPage('dashboard');
 });
