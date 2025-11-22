@@ -55,6 +55,11 @@ document.addEventListener("DOMContentLoaded", function () {
             initWebmailsPage();  // Ensure this is being called
         }
 
+        if (page === 'helper') {
+            console.log("Helper page initialized");
+            initHelperPage();  // Ensure this is being called
+        }
+
         if (page === 'settings') {
             console.log("Settings page initialized");
             initSettingsPage();  // Ensure this is being called
@@ -140,5 +145,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load the default page (settings) when the page is loaded
-    loadPage('dashboard');
+    loadPage('helper');
 });

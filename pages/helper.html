@@ -1,0 +1,61 @@
+<style>
+    .helper-card {
+        width: 100%;
+    }
+
+    /* Scrollable grid wrapper */
+    .excel-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: #fff;
+        max-height: 70vh;
+    }
+
+    .excel-table {
+        border-collapse: collapse;
+        width: max-content;
+        min-width: 100%;
+        font-family: "Segoe UI", sans-serif;
+        font-size: 14px;
+    }
+
+    .excel-table th {
+        background: #f3f3f3;
+        font-weight: 600;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    .excel-table td {
+        border: 1px solid #ccc;
+        min-width: 120px;
+        height: 32px;
+        padding: 4px 8px;
+        background: #fff;
+    }
+
+    .excel-table td:focus {
+        outline: 2px solid #4A90E2;
+        background: #eef6ff;
+    }
+</style>
+<div class="row g-2 g-md-3 helper-page">
+    <div class="col-lg-12">
+        <div class="card cozy-card rounded-4 border-0 shadow-sm p-4 helper-card">
+
+            <h5 class="settings-title mb-3">
+                <i class="bi bi-clipboard-data-fill me-2"></i> Ez Report Helper
+            </h5>
+
+            <!-- Excel-like wrapper -->
+            <div class="excel-container">
+                <table id="excelGrid" class="excel-table"></table>
+            </div>
+
+        </div>
+    </div>
+</div>
