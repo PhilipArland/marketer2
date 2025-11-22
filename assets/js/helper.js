@@ -12,7 +12,7 @@ function initHelperPage() {
 
     const table = document.getElementById("excelGrid");
     const defaultColumns = 6;
-    const defaultRows = 2;
+    const defaultRows = 10;
 
     // Load saved table
     let savedData = JSON.parse(localStorage.getItem("helperTableData") || "null");
@@ -36,11 +36,12 @@ function initHelperPage() {
         th.appendChild(span);
 
         const btn = document.createElement("button");
-        btn.innerText = "📋";
+        btn.innerText = "Copy";
         btn.title = "Copy this column";
         btn.style.marginLeft = "5px";
         btn.style.fontSize = "12px";
         btn.style.cursor = "pointer";
+        btn.classList.add("btn", "btn-sm", "btn-outline-secondary");
         btn.addEventListener("click", () => copyColumn(colIndex));
         th.appendChild(btn);
 
@@ -158,7 +159,14 @@ function initHelperPage() {
                 if (emails.length <= 1) continue; // skip rows with 1 or 0 emails
 
                 emails.forEach(email => {
-                    newRows.push([companyCell.innerText, email]);
+                    newRows.push([
+                        companyCell.innerText,  // col 0
+                        email,                  // col 1
+                        table.rows[r].cells[2]?.innerText || "", // col 2
+                        table.rows[r].cells[3]?.innerText || "", // col 3
+                        table.rows[r].cells[4]?.innerText || "", // col 4
+                        table.rows[r].cells[5]?.innerText || ""  // col 5
+                    ]);
                 });
 
                 // Mark original row for deletion
@@ -235,6 +243,36 @@ function initHelperPage() {
             } else {
                 console.log("No data to normalize.");
             }
+        });
+    }
+
+    const copyABBtn = document.getElementById("copyABBtn");
+    if (copyABBtn) {
+        copyABBtn.addEventListener("click", () => {
+            const table = document.getElementById("excelGrid");
+            if (!table) return;
+
+            let output = [];
+
+            for (let r = 1; r < table.rows.length; r++) {
+                const company = table.rows[r].cells[0]?.innerText.trim() || "";
+                const email = table.rows[r].cells[1]?.innerText.trim() || "";
+
+                // Skip blank rows
+                if (company === "" && email === "") continue;
+
+                // Use TAB to create 2 columns
+                output.push(`${company}\t${email}`);
+            }
+
+            if (output.length === 0) {
+                alert("No data to copy.");
+                return;
+            }
+
+            navigator.clipboard.writeText(output.join("\n"))
+                .then(() => alert("Copied A + B (2 columns)!"))
+                .catch(() => alert("Copy failed."));
         });
     }
 

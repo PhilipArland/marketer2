@@ -302,8 +302,10 @@ body {
 }
 
 
-
-
+.copied-flash {
+    background: #fff3b0 !important;
+    transition: background 0.6s ease;
+}
 
 
 
