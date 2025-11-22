@@ -2,16 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to load the content into the main section dynamically
     function loadPage(page) {
+        // Save last visited page
+        localStorage.setItem('lastPage', page);
+
         fetch(`pages/${page}.html`)
             .then(res => res.text())
             .then(html => {
                 const content = document.getElementById('content');
                 content.innerHTML = html;
 
-                // Force scroll to top instantly after loading a new page
                 window.scrollTo(0, 0);
 
-                // Handle page-specific functionality (like initializing page-specific JS)
                 handlePageInit(page);
             })
             .catch(err => console.error('Error loading page:', err));
@@ -144,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Load the default page (settings) when the page is loaded
-    loadPage('dashboard');
+    // Load last opened page or default to dashboard
+    const lastPage = localStorage.getItem('lastPage') || 'dashboard';
+    loadPage(lastPage);
 });
