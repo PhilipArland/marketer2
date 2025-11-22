@@ -145,5 +145,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load the default page (settings) when the page is loaded
-    loadPage('helper');
+    loadPage('dashboard');
 });

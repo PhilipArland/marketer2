@@ -257,11 +257,22 @@ function initDashboardPage() {
 
     // 10. Generate the report based on the input values
     function generateReport() {
-        const today = new Date().toLocaleDateString("en-US", {
+        const now = new Date();
+        // Determine if it's before 1:00 PM (13:00 in 24-hour format)
+        const isMidDay = now.getHours() < 13;
+
+        // Format the base date string
+        const dateString = now.toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric"
         });
+
+        // Append the Mid-Day Report tag if required
+        const reportDateHeader = isMidDay
+            ? `${dateString} (Mid-Day Report)`
+            : dateString;
+
 
         // -----------------------------
         // 1. Collect Values for Report
@@ -272,6 +283,7 @@ function initDashboardPage() {
             const colMarket = document.getElementById("colMarket").value;
             const colCompanyCount = document.getElementById("colCompanyCount").value;
             const colEmailCount = document.getElementById("colEmailCount").value;
+            const colMode = document.getElementById("colLocation").dataset.mode; // Retrieve the mode
 
             // Get the collection location label
             const collectionLocationLabel = formatLocationLabel(colLocation, colMode);
@@ -290,6 +302,7 @@ No. of Collected Company Emails: ${colEmailCount}`;
             const emailMarket = document.getElementById("emailMarket").value;
             const emailProductLine = document.getElementById("emailProductLine").value;
             const emailCount = document.getElementById("emailCount").value;
+            const emailMode = document.getElementById("emailLocation").dataset.mode; // Retrieve the mode
 
             // Get the email location label
             const emailLocationLabel = formatLocationLabel(emailLocation, emailMode);
@@ -308,6 +321,7 @@ No. of Sent Emails: ${emailCount}`;
             const webmailMarket = document.getElementById("webmailMarket").value;
             const webmailProductLine = document.getElementById("webmailProductLine").value;
             const webmailCount = document.getElementById("webmailCount").value;
+            const webmailMode = document.getElementById("webmailLocation").dataset.mode; // Retrieve the mode
 
             // Get the webmail location label
             const webmailLocationLabel = formatLocationLabel(webmailLocation, webmailMode);
@@ -321,13 +335,13 @@ No. of Sent Webmails: ${webmailCount}`;
         }
 
         let responseText = "";
-        if (responseSection.style.display !== "none") {
-            const emailsReceived = document.getElementById("emailsReceived").value || "0";
-            const notInterested = document.getElementById("notInterested").value || "0";
-            responseText =
-                `Emails Received: ${emailsReceived}
+        // Note: responseSection is not toggled, so we assume it's always available
+        const emailsReceived = document.getElementById("emailsReceived").value || "0";
+        const notInterested = document.getElementById("notInterested").value || "0";
+        responseText =
+            `Emails Received: ${emailsReceived}
 Not Interested: ${notInterested}`;
-        }
+
 
         // -----------------------------
         // 2. Assemble the Report Content
@@ -345,7 +359,7 @@ Not Interested: ${notInterested}`;
         // -----------------------------
         const username = localStorage.getItem('username') || 'User';
         const fullReport = `
-${today}
+${reportDateHeader}
 
 ${reportBody}
 
@@ -387,6 +401,34 @@ Thank you.
     copyReportBtn2.addEventListener('click', () => {
         navigator.clipboard.writeText(dailyReport.value); // Copy the generated report to clipboard
     });
+
+    const resetBtn = document.getElementById("resetBtn");
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            // Clear all input fields
+            document.querySelectorAll("input").forEach(input => {
+                input.value = "";
+                // Clear corresponding localStorage items for inputs
+                localStorage.removeItem(input.id);
+            });
+
+            // Clear the generated report
+            dailyReport.value = "";
+            localStorage.removeItem("generatedReport");
+
+            // Reset location modes to default ("country") and re-apply placeholders
+            localStorage.setItem("colMode", "country");
+            localStorage.setItem("emailMode", "country");
+            localStorage.setItem("webmailMode", "country");
+            applyMode("country", "colLocation");
+            applyMode("country", "emailLocation");
+            applyMode("country", "webmailLocation");
+
+            // Force a report regeneration (which will now be mostly empty)
+            generateReport();
+            console.log("All input fields and local storage data have been reset.");
+        });
+    }
 
     // Call to generate report after page load
     generateReport();
