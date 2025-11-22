@@ -12,7 +12,7 @@ function initHelperPage() {
 
     const table = document.getElementById("excelGrid");
     const defaultColumns = 5;
-    const defaultRows = 10;
+    const defaultRows = 2;
 
     // Load saved table
     let savedData = JSON.parse(localStorage.getItem("helperTableData") || "null");
@@ -129,6 +129,55 @@ function initHelperPage() {
             console.log("Undo applied");
         });
     }
+
+    const splitBtn = document.getElementById("splitMultiEmailBtn");
+    if (splitBtn) {
+        splitBtn.addEventListener("click", () => {
+            saveTableToLocalStorage(); // save current state for Undo
+
+            const table = document.getElementById("excelGrid");
+            const newRows = [];
+
+            // Iterate rows (skip header)
+            for (let r = 1; r < table.rows.length; r++) {
+                const companyCell = table.rows[r].cells[0];
+                const emailCell = table.rows[r].cells[1];
+
+                if (!companyCell || !emailCell) continue;
+
+                const emails = emailCell.innerText.split(/\r?\n/).map(e => e.trim()).filter(e => e !== "");
+
+                if (emails.length <= 1) continue; // skip rows with 1 or 0 emails
+
+                emails.forEach(email => {
+                    newRows.push([companyCell.innerText, email]);
+                });
+
+                // Mark original row for deletion
+                table.rows[r].dataset.delete = "true";
+            }
+
+            // Delete original multi-email rows
+            for (let r = table.rows.length - 1; r > 0; r--) {
+                if (table.rows[r].dataset.delete === "true") table.deleteRow(r);
+            }
+
+            // Append new rows
+            newRows.forEach(rowData => {
+                const row = table.insertRow();
+                rowData.forEach(cellData => {
+                    const td = document.createElement("td");
+                    td.contentEditable = "true";
+                    td.innerText = cellData;
+                    row.appendChild(td);
+                });
+            });
+
+            saveTableToLocalStorage(false); // save changes, don’t push new history
+            console.log(`Split ${newRows.length} emails into separate rows`);
+        });
+    }
+
 }
 
 // --------------------
@@ -167,8 +216,8 @@ document.addEventListener("paste", function (event) {
     const text = (event.clipboardData || window.clipboardData).getData("text");
 
     const rowsData = text.split(/\r?\n/);
-    const parsed = rowsData.map(r => r.split("\t"));
 
+    // Get starting position
     const startCell = active;
     let startRow = startCell.parentElement.rowIndex - 1; // skip header
     let startCol = startCell.cellIndex;
@@ -176,63 +225,51 @@ document.addEventListener("paste", function (event) {
     let currentRows = table.rows.length - 1;
     let currentCols = table.rows[0].cells.length;
 
-    const neededRows = startRow + parsed.length;
-    let maxColsNeeded = startCol;
-    parsed.forEach(row => {
-        if (startCol + row.length > maxColsNeeded) maxColsNeeded = startCol + row.length;
-    });
-    const neededCols = maxColsNeeded;
+    const newRowsToAdd = [];
 
-    // Add columns if needed
-    if (neededCols > currentCols) {
-        const header = table.rows[0];
-        for (let c = currentCols; c < neededCols; c++) {
-            const th = document.createElement("th");
-            th.innerText = String.fromCharCode(65 + c);
-
-            const btn = document.createElement("button");
-            btn.innerText = "📋";
-            btn.title = "Copy this column";
-            btn.style.marginLeft = "5px";
-            btn.style.fontSize = "12px";
-            btn.style.cursor = "pointer";
-            btn.addEventListener("click", () => copyColumn(c));
-            th.appendChild(btn);
-
-            header.appendChild(th);
-        }
-        for (let r = 1; r < table.rows.length; r++) {
-            for (let c = currentCols; c < neededCols; c++) {
-                const td = document.createElement("td");
-                td.contentEditable = "true";
-                table.rows[r].appendChild(td);
+    rowsData.forEach((line, i) => {
+        let cells = line.split("\t");
+        // Handle quoted multi-line cells
+        for (let j = 0; j < cells.length; j++) {
+            let cell = cells[j];
+            if (cell.startsWith('"') && !cell.endsWith('"')) {
+                // Collect following lines until we find closing quote
+                let k = i + 1;
+                while (k < rowsData.length && !rowsData[k].endsWith('"')) {
+                    cell += "\n" + rowsData[k];
+                    rowsData[k] = ""; // mark as consumed
+                    k++;
+                }
+                if (k < rowsData.length) {
+                    cell += "\n" + rowsData[k].replace(/"$/, "");
+                    rowsData[k] = "";
+                }
+                cells[j] = cell.replace(/^"|"$/g, ""); // remove quotes
             }
         }
-    }
 
-    // Add rows if needed
-    if (neededRows > currentRows) {
-        for (let r = currentRows; r < neededRows; r++) {
+        // Now insert this line
+        const rowIndex = startRow + i + 1;
+        if (rowIndex >= table.rows.length) {
+            // Add new row if needed
             const row = table.insertRow();
-            for (let c = 0; c < table.rows[0].cells.length; c++) {
+            for (let c = 0; c < currentCols; c++) {
                 const td = document.createElement("td");
                 td.contentEditable = "true";
                 row.appendChild(td);
             }
         }
-    }
 
-    // Paste data
-    parsed.forEach((cols, i) => {
-        const rowIndex = startRow + i + 1;
-        const rowCells = table.rows[rowIndex].cells;
-        cols.forEach((colText, j) => {
+        const rowCells = table.rows[startRow + i + 1].cells;
+
+        cells.forEach((colText, j) => {
             rowCells[startCol + j].innerText = colText;
         });
     });
 
     saveTableToLocalStorage();
 });
+
 
 // --------------------
 // Copy column
