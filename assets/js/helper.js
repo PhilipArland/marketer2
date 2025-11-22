@@ -11,7 +11,7 @@ function initHelperPage() {
     console.log("Initializing helper.js");
 
     const table = document.getElementById("excelGrid");
-    const defaultColumns = 5;
+    const defaultColumns = 6;
     const defaultRows = 2;
 
     // Load saved table
@@ -82,21 +82,29 @@ function initHelperPage() {
     const removeNaBtn = document.getElementById("removeNaBtn");
     if (removeNaBtn) {
         removeNaBtn.addEventListener("click", () => {
-            saveTableToLocalStorage(); // save current state to history
+            saveTableToLocalStorage(); // save current state for Undo
 
+            const table = document.getElementById("excelGrid");
             let rowsDeleted = 0;
+
             for (let r = table.rows.length - 1; r > 0; r--) { // skip header
-                const cellB = table.rows[r].cells[1]; // column B
-                if (cellB && cellB.innerText.trim().toUpperCase() === "N/A") {
+                const cellA = table.rows[r].cells[0];
+                const cellB = table.rows[r].cells[1];
+
+                const valA = cellA ? cellA.innerText.trim() : "";
+                const valB = cellB ? cellB.innerText.trim() : "";
+
+                if (valB.toUpperCase() === "N/A" || (valA === "" && valB === "")) {
                     table.deleteRow(r);
                     rowsDeleted++;
                 }
             }
 
-            saveTableToLocalStorage(false); // save new state, don't push history again
-            console.log(`Removed ${rowsDeleted} rows with N/A in column B`);
+            saveTableToLocalStorage(false); // save changes without pushing extra history
+            console.log(`Removed ${rowsDeleted} rows (N/A or blank)`);
         });
     }
+
 
     // --------------------
     // Undo button
@@ -175,6 +183,58 @@ function initHelperPage() {
 
             saveTableToLocalStorage(false); // save changes, don’t push new history
             console.log(`Split ${newRows.length} emails into separate rows`);
+        });
+    }
+
+    const normalizeBtn = document.getElementById("normalizeDataBtn");
+    if (normalizeBtn) {
+        normalizeBtn.addEventListener("click", () => {
+            saveTableToLocalStorage(); // save current state for Undo
+
+            const table = document.getElementById("excelGrid");
+            let changed = 0;
+            const totalRows = table.rows.length;
+
+            for (let r = 1; r < totalRows; r++) { // skip header (r=1)
+                const row = table.rows[r];
+                let rowChanged = false;
+
+                // --- Column A (index 0): Trim only ---
+                const cellA = row.cells[0];
+                if (cellA && cellA.innerText.trim() !== "") {
+                    const originalA = cellA.innerText;
+                    const trimmedA = originalA.trim();
+
+                    if (originalA !== trimmedA) {
+                        cellA.innerText = trimmedA;
+                        rowChanged = true;
+                    }
+                }
+
+                // --- Column B (index 1): Trim AND Lowercase ---
+                const cellB = row.cells[1];
+                if (cellB && cellB.innerText.trim() !== "") {
+                    const originalB = cellB.innerText;
+                    // Trim first, then lowercase
+                    const normalizedB = originalB.trim().toLowerCase();
+
+                    if (originalB !== normalizedB) {
+                        cellB.innerText = normalizedB;
+                        rowChanged = true;
+                    }
+                }
+
+                if (rowChanged) {
+                    changed++;
+                }
+            }
+
+            if (changed > 0) {
+                saveTableToLocalStorage(false); // save new state but don't push another history
+                console.log(`Normalized data in ${changed} rows (Trimmed Col A, Trimmed & Lowercased Col B).`);
+            } else {
+                console.log("No data to normalize.");
+            }
         });
     }
 

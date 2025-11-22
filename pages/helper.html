@@ -1,23 +1,26 @@
 <style>
     .helper-card {
-        width: 100%;
+        width: auto;
     }
 
-    /* Scrollable grid wrapper */
+    /* Scrollable wrapper: horizontal + vertical scroll inside the card */
     .excel-container {
         width: 100%;
         overflow-x: auto;
+        /* horizontal scroll for table */
         overflow-y: auto;
+        /* vertical scroll if too many rows */
         border: 1px solid #ddd;
         border-radius: 6px;
         background: #fff;
         max-height: 70vh;
     }
 
+    /* Table expands naturally inside the scrollable container */
     .excel-table {
         border-collapse: collapse;
-        width: max-content;
         min-width: 100%;
+        /* ensures table fills container */
         font-family: "Segoe UI", sans-serif;
         font-size: 14px;
     }
@@ -51,18 +54,22 @@
                 <i class="bi bi-clipboard-data-fill me-2"></i> Ez Report Helper
             </h5>
 
-            <div class="d-flex justify-content-end mb-2">
-                <button id="clearAllBtn" class="btn btn-danger btn-sm me-2">
-                    <i class="bi bi-trash-fill me-1"></i> Clear All
+            <div class="d-flex mb-2">
+                <button id="undoBtn" class="btns btn-primary btn-sm me-2">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Undo
+                </button>
+                <button id="normalizeDataBtn" class="btns btn-secondary btn-sm me-2">
+                    <i class="bi bi-magic me-1"></i> Normalize Data
+                </button>
+                <button id="splitMultiEmailBtn" class="btn btn-info btn-sm me-2">
+                    <i class="bi bi-list-columns-reverse me-1"></i> Split Multi-Email Rows
                 </button>
                 <button id="removeNaBtn" class="btn btn-warning btn-sm me-2">
                     <i class="bi bi-x-circle-fill me-1"></i> Remove N/A Rows
                 </button>
-                <button id="undoBtn" class="btn btn-secondary btn-sm me-2">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i> Undo
-                </button>
-                <button id="splitMultiEmailBtn" class="btn btn-info btn-sm me-2">
-                    <i class="bi bi-list-columns-reverse me-1"></i> Split Multi-Email Rows
+
+                <button id="clearAllBtn" class="btn btn-danger btn-sm me-2">
+                    <i class="bi bi-trash-fill me-1"></i> Clear All
                 </button>
             </div>
 
