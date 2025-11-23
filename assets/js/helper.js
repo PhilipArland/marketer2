@@ -247,7 +247,7 @@ function initHelperPage() {
     }
 
     const copyABBtn = document.getElementById("copyABBtn");
-    if (copyABBtn) {
+    if (copyABBtn && !copyABBtn.dataset.listenerAttached) {
         copyABBtn.addEventListener("click", () => {
             const table = document.getElementById("excelGrid");
             if (!table) return;
@@ -258,10 +258,8 @@ function initHelperPage() {
                 const company = table.rows[r].cells[0]?.innerText.trim() || "";
                 const email = table.rows[r].cells[1]?.innerText.trim() || "";
 
-                // Skip blank rows
                 if (company === "" && email === "") continue;
 
-                // Use TAB to create 2 columns
                 output.push(`${company}\t${email}`);
             }
 
@@ -274,7 +272,10 @@ function initHelperPage() {
                 .then(() => alert("Copied A + B (2 columns)!"))
                 .catch(() => alert("Copy failed."));
         });
+
+        copyABBtn.dataset.listenerAttached = "true"; // mark as attached
     }
+
 
 }
 
