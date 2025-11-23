@@ -20,7 +20,7 @@ function initDashboardPage() {
         let hours = now.getHours();
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
-        const ampm = hours >= 12 ? 'pm' : 'am';
+        const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
         hours = hours ? hours : 12; // hour '0' should be '12'
         currentTime.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
@@ -110,7 +110,7 @@ function initDashboardPage() {
     if (workdaysLeft === 0) {
         paydayMsg.textContent = `Today is payday! (${formatDate(payday)})`;
     } else {
-        paydayMsg.textContent = `${formatDate(payday)} | ${workdaysLeft} working day${workdaysLeft !== 1 ? "s" : ""} left before payday!`;
+        paydayMsg.textContent = `Goal: ${formatDate(payday)} | ${workdaysLeft} working day${workdaysLeft !== 1 ? "s" : ""} left before payday!`;
     }
 
     // 1. Get references to sections, buttons, and the report textarea
@@ -394,12 +394,20 @@ Thank you.
     // 13. Copy Report Button Functionality
     const copyReportBtn = document.getElementById("copyReportBtn");
     copyReportBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(dailyReport.value); // Copy the generated report to clipboard
+        navigator.clipboard.writeText(dailyReport.value);
+        copyReportBtn.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copied!';
+        setTimeout(() => {
+            copyReportBtn.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copy Report';
+        }, 1500);
     });
 
     const copyReportBtn2 = document.getElementById("copyReportBtn2");
     copyReportBtn2.addEventListener('click', () => {
-        navigator.clipboard.writeText(dailyReport.value); // Copy the generated report to clipboard
+        navigator.clipboard.writeText(dailyReport.value);
+        copyReportBtn2.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copied!';
+        setTimeout(() => {
+            copyReportBtn2.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copy Report';
+        }, 1500);
     });
 
     const resetBtn = document.getElementById("resetBtn");
