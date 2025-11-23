@@ -26,7 +26,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Email Subject</label>
-                <input type="text" id="emailSubject" class="form-control rounded-3" readonly>
+                <input type="text" id="emailSubject" class="form-control rounded-3" readonly placeholder="Add subject template in settings...">
                 <button class="btns btn-primary mt-2 w-100" id="copySubject">
                     <i class="bi bi-clipboard"></i> Copy Subject
                 </button>
@@ -34,7 +34,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Email Body</label>
-                <textarea id="emailBody" class="form-control rounded-3" rows="6" readonly></textarea>
+                <textarea id="emailBody" class="form-control rounded-3" rows="6" readonly placeholder="Add body template in settings..."></textarea>
                 <button class="btns btn-primary mt-2 w-100" id="copyBody">
                     <i class="bi bi-clipboard"></i> Copy Body
                 </button>
@@ -133,12 +133,12 @@
                         <input type="text" id="marketInput" class="form-control rounded-3"
                             placeholder="Enter market segment...">
                         <button class="btn btn-dark btn-sm" id="toggleMarket2">
-                            <i class="bi bi-plus-lg"></i>
+                            <i class="bi bi-plus"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="w-75 d-none" id="marketSegment2">
+                <div class="w-100 d-none" id="marketSegment2">
                     <label class="form-label fw-semibold">Market Segment 2</label>
                     <input type="text" id="marketInput2" class="form-control rounded-3"
                         placeholder="Enter 2nd Market Segment...">

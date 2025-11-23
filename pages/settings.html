@@ -17,7 +17,7 @@
     <!-- Profile Settings -->
     <div class="col-lg-12">
         <div class="card cozy-card rounded-4 border-0 shadow-sm p-4">
-            <h5 class="settings-title mb-3"> <i class="bi bi-gear-fill me-2"></i> Profile Settings </h5>
+            <h5 class="settings-title mb-3"> <i class="bi bi-gear-fill me-2"></i>Profile Settings </h5>
 
             <div class="mb-3">
                 <label for="username" class="form-label fw-bold">Display Name</label>
@@ -43,11 +43,9 @@
         </div>
     </div>
 
-    <!-- Webmail Section: -->
-    <h6 class="fw-semibold mt-4 mb-0 px-3"> Webmail Template </h6>
     <div class="col-lg-12">
         <div class="card cozy-card rounded-4 border-0 shadow-sm p-4">
-            <h5 class="settings-title mb-3"> <i class="bi bi-envelope-fill me-2"></i> Email </h5>
+            <h5 class="settings-title mb-3"> <i class="bi bi-envelope-fill me-2"></i>Email Details</h5>
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Subject Template</label>
@@ -55,13 +53,17 @@
                     placeholder="Use {company} as placeholder">
             </div>
 
-            <div class="mb-3">
+            <div class="">
                 <label class="form-label fw-semibold">Body Template</label>
                 <textarea id="bodyTemplate" class="form-control rounded-3" rows="6"
                     placeholder="Use {company} as placeholder"></textarea>
             </div>
+        </div>
+    </div>
 
-            <h5 class="settings-title mb-3"> <i class="bi bi-person-fill me-2"></i> Personal Details </h5>
+    <div class="col-lg-12">
+        <div class="card cozy-card rounded-4 border-0 shadow-sm p-4">
+            <h5 class="settings-title mb-3"> <i class="bi bi-person-fill me-2"></i>Personal Details </h5>
 
             <!-- Full Name -->
             <div class="mb-3">
@@ -90,7 +92,7 @@
 
             <!-- Email -->
             <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
+                <label class="form-label fw-semibold">Email Address</label>
                 <input type="email" id="email" class="form-control rounded-3" placeholder="Enter your email">
             </div>
 
@@ -106,37 +108,3 @@
         </div>
     </div>
 </div>
-
-
-<style>
-    .custom-text-input {
-        border: 1px solid var(--bg-cozy-orange);
-        background: rgba(212, 165, 116, 0.1);
-        transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-        color: var(--text-primary);
-    }
-
-    .custom-text-input:focus {
-        background: rgba(212, 165, 116, 0.2);
-        border-color: var(--bg-cozy-orange);
-        box-shadow: 0 0 4px rgba(212, 165, 116, 0.5);
-        color: var(--text-primary);
-        outline: none;
-    }
-
-    .custom-text-input::placeholder {
-        color: var(--text-secondary);
-        opacity: 1;
-    }
-
-    .upload-box {
-        background: rgba(212, 165, 116, 0.1);
-        border: 2px dashed var(--bg-cozy-orange);
-        cursor: pointer;
-        transition: background 0.3s ease, border-color 0.3s ease;
-    }
-
-    .upload-box:hover {
-        background: rgba(212, 165, 116, 0.2);
-    }
-</style>
