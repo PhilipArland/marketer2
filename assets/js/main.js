@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // UPDATE PROFILE INFO
     // ==============================
     function updateProfileInfo() {
-        const username = localStorage.getItem('username') || 'Cozy User';
+        const username = localStorage.getItem('username') || 'User';
         const profileImg = localStorage.getItem('profileImg') || 'assets/img/2.png';
 
         // Sidebar

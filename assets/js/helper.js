@@ -36,17 +36,29 @@ function initHelperPage() {
         th.appendChild(span);
 
         const btn = document.createElement("button");
-        btn.innerText = "Copy";
+        btn.innerHTML = `<i class="bi bi-clipboard"></i> Copy`;
         btn.title = "Copy this column";
         btn.style.marginLeft = "5px";
         btn.style.fontSize = "12px";
         btn.style.cursor = "pointer";
         btn.classList.add("btn", "btn-sm", "btn-outline-secondary");
-        btn.addEventListener("click", () => copyColumn(colIndex));
-        th.appendChild(btn);
 
+        btn.addEventListener("click", () => {
+            copyColumn(colIndex);
+
+            // Change button text to "Copied"
+            btn.innerHTML = `<i class="bi bi-check2-circle"></i> Copied`;
+
+            // Optional: revert back to "Copy" after 2 seconds
+            setTimeout(() => {
+                btn.innerHTML = `<i class="bi bi-clipboard"></i> Copy`;
+            }, 1500);
+        });
+
+        th.appendChild(btn);
         header.appendChild(th);
     });
+
 
     // Table body
     for (let r = 0; r < numRows; r++) {

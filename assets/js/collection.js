@@ -15,7 +15,6 @@ function copyOutput() {
     if (outputText) {
         outputText.select();
         document.execCommand('copy');
-        alert('Generated message copied to clipboard!');
     }
 }
 
@@ -106,8 +105,8 @@ function updateGeneratedMessage() {
     const boxes = cityList.querySelectorAll("input[type='checkbox']");
     const labels = cityList.querySelectorAll(".form-check-label");
 
-    let username = localStorage.getItem('username') || 'Team Member';
-    let cityText = "N/A";
+    let username = localStorage.getItem('username') || 'User';
+    let cityText = "";
     let nextCityText = "";
 
     // Find the last checked city

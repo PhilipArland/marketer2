@@ -397,7 +397,7 @@ Thank you.
         navigator.clipboard.writeText(dailyReport.value);
         copyReportBtn.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copied!';
         setTimeout(() => {
-            copyReportBtn.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copy Report';
+            copyReportBtn.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copy Report';
         }, 1500);
     });
 
@@ -406,7 +406,7 @@ Thank you.
         navigator.clipboard.writeText(dailyReport.value);
         copyReportBtn2.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copied!';
         setTimeout(() => {
-            copyReportBtn2.innerHTML = '<i class="bi bi-clipboard-check me-1"></i> Copy Report';
+            copyReportBtn2.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copy Report';
         }, 1500);
     });
 

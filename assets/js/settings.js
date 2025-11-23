@@ -1,13 +1,13 @@
 function initSettingsPage() {
     // Define all keys for webmail templates and personal details
     const PERSONAL_DETAIL_KEYS = [
-        'subjectTemplate', 
-        'bodyTemplate', 
-        'fullName', 
+        'subjectTemplate',
+        'bodyTemplate',
+        'fullName',
         'myCompanyName', // <-- MATCHES NEW HTML ID
-        'address', 
-        'contact', 
-        'email', 
+        'address',
+        'contact',
+        'email',
         'website'
     ];
 
@@ -82,12 +82,12 @@ function initSettingsPage() {
 
     // --- 4. Event Listeners and Initialization ---
 
-    loadSettings(); 
+    loadSettings();
 
     const saveButton = document.getElementById('save-settings');
     if (saveButton) {
         saveButton.addEventListener('click', saveSettings);
-    } 
+    }
 
     const saveWebmailButton = document.getElementById('saveWebmailBtn');
     if (saveWebmailButton) {
@@ -108,4 +108,39 @@ function initSettingsPage() {
             }
         });
     }
+
+    function resetAllSettings() {
+        const CONFIRM = confirm("Are you sure you want to reset all settings? This cannot be undone.");
+        if (!CONFIRM) return;
+
+        // Clear localStorage keys
+        localStorage.removeItem('username');
+        localStorage.removeItem('profileImg');
+        PERSONAL_DETAIL_KEYS.forEach(key => localStorage.removeItem(key));
+
+        // Clear UI fields
+        const usernameField = document.getElementById('username');
+        if (usernameField) usernameField.value = '';
+
+        const previewContainer = document.getElementById('preview-container');
+        if (previewContainer) previewContainer.innerHTML = '';
+
+        PERSONAL_DETAIL_KEYS.forEach(key => {
+            const element = document.getElementById(key);
+            if (element) element.value = '';
+        });
+
+        // Reset file input
+        const profileImgInput = document.getElementById('profile-img');
+        if (profileImgInput) profileImgInput.value = '';
+
+        alert("All settings have been reset.");
+    }
+
+    // Attach listener
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    if (resetAllBtn) {
+        resetAllBtn.addEventListener('click', resetAllSettings);
+    }
+
 }
