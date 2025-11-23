@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Function to load the content into the main section dynamically
+    // ==============================
+    // FUNCTION TO LOAD PAGES
+    // ==============================
     function loadPage(page) {
         // Save last visited page
         localStorage.setItem('lastPage', page);
@@ -18,7 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.error('Error loading page:', err));
     }
 
-    // Helper: Load HTML into a target element
+    // ==============================
+    // HELPER: LOAD HTML INTO ELEMENT
+    // ==============================
     function loadHTML(targetId, url, callback) {
         fetch(url)
             .then(response => {
@@ -27,49 +31,31 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(html => {
                 const target = document.getElementById(targetId);
-                target.innerHTML = html;
-
-                // Reset scroll position for sidebars
+                if (target) target.innerHTML = html;
                 target.scrollTop = 0;
-
                 if (callback) callback();
             })
             .catch(err => console.error(err));
     }
 
-    // Handle per-page logic (add custom JS or behavior)
+    // ==============================
+    // HANDLE PAGE SPECIFIC INIT
+    // ==============================
     function handlePageInit(page) {
-        syncActiveLinks(page); // Update active state in the sidebar
+        syncActiveLinks(page);
 
-        if (page === 'dashboard') {
-            console.log("Dashboard page initialized");
-            initDashboardPage();  // Ensure this is being called
-        }
-
-        if (page === 'collection') {
-            console.log("Collection page initialized");
-            initCollectionPage();  // Ensure this is being called
-        }
-
-        if (page === 'webmails') {
-            console.log("Webmail page initialized");
-            initWebmailsPage();  // Ensure this is being called
-        }
-
-        if (page === 'helper') {
-            console.log("Helper page initialized");
-            initHelperPage();  // Ensure this is being called
-        }
-
-        if (page === 'settings') {
-            console.log("Settings page initialized");
-            initSettingsPage();  // Ensure this is being called
+        switch (page) {
+            case 'dashboard': initDashboardPage(); break;
+            case 'collection': initCollectionPage(); break;
+            case 'webmails': initWebmailsPage(); break;
+            case 'helper': initHelperPage(); break;
+            case 'settings': initSettingsPage(); break;
         }
     }
 
-
-
-    // Sync the active state between the left sidebar and the mobile sidebar
+    // ==============================
+    // SYNC ACTIVE LINKS
+    // ==============================
     function syncActiveLinks(page) {
         document.querySelectorAll('#left-sidebar a[data-page], #mobileSidebar a[data-page]')
             .forEach(link => {
@@ -77,7 +63,31 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // Mobile Sidebar Toggle Functionality
+    // ==============================
+    // UPDATE PROFILE INFO
+    // ==============================
+    function updateProfileInfo() {
+        const username = localStorage.getItem('username') || 'Cozy User';
+        const profileImg = localStorage.getItem('profileImg') || 'assets/img/2.png';
+
+        // Sidebar
+        const sidebarUsernameEl = document.getElementById('sidebar-username');
+        const sidebarProfileImgEl = document.getElementById('sidebar-profile-img');
+        if (sidebarUsernameEl) sidebarUsernameEl.textContent = username;
+        if (sidebarProfileImgEl) sidebarProfileImgEl.src = profileImg;
+
+        // Navbar / Mobile
+        const navProfileImgEl = document.getElementById('nav-profile-img');
+        const navbarProfileImgEl = document.getElementById('navbar-profile-img');
+        const navbarUsernameEl = document.getElementById('navbar-username');
+        if (navProfileImgEl) navProfileImgEl.src = profileImg;
+        if (navbarProfileImgEl) navbarProfileImgEl.src = profileImg;
+        if (navbarUsernameEl) navbarUsernameEl.textContent = username;
+    }
+
+    // ==============================
+    // MOBILE SIDEBAR
+    // ==============================
     loadHTML("mobileSidebar", "includes/mobile-sidebar.html", () => {
         const toggleBtn = document.getElementById("mobileSidebarToggle");
         const sidebar = document.getElementById("mobileSidebar");
@@ -97,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Handle sidebar menu links
+        // Handle mobile sidebar links
         document.querySelectorAll("#mobileSidebar a[data-page]").forEach(link => {
             link.addEventListener("click", e => {
                 e.preventDefault();
@@ -108,14 +118,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.classList.remove("no-scroll");
             });
         });
+
+        updateProfileInfo(); // ensure profile info is updated in mobile sidebar
     });
 
-    // Left Sidebar (Desktop Version)
+    // ==============================
+    // LEFT SIDEBAR (DESKTOP)
+    // ==============================
     loadHTML("left-sidebar", "includes/left-sidebar.html", () => {
         const toggleBtn = document.getElementById('toggle-btn');
         const sidebar = document.getElementById('left-sidebar');
 
-        // Toggle the left sidebar visibility
+        // Toggle sidebar
         if (toggleBtn) {
             toggleBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('closed');
@@ -123,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Handle sidebar menu links (for desktop)
+        // Handle desktop sidebar links
         document.querySelectorAll('#left-sidebar a[data-page]').forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();
@@ -132,20 +146,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        // Update sidebar with username and profile image from localStorage
-        const sidebarUsername = localStorage.getItem('username');
-        const sidebarProfileImg = localStorage.getItem('profileImg');
-
-        if (sidebarUsername) {
-            document.getElementById('sidebar-username').textContent = sidebarUsername;
-        }
-
-        if (sidebarProfileImg) {
-            document.getElementById('sidebar-profile-img').src = sidebarProfileImg;
-        }
+        updateProfileInfo(); // update profile info in sidebar
     });
 
-    // Load last opened page or default to dashboard
+    // ==============================
+    // LOAD LAST PAGE OR DEFAULT
+    // ==============================
     const lastPage = localStorage.getItem('lastPage') || 'dashboard';
     loadPage(lastPage);
 });

@@ -88,13 +88,20 @@ function updateGeneratedMessage() {
     const marketSegmentInput2 = document.getElementById('marketSegmentInput2');
     const cityList = document.getElementById('cityList');
     const outputText = document.getElementById('outputText');
+    const secondSection = document.getElementById('secondCountrySegment');
 
     if (!countryInput || !marketSegmentInput || !cityList || !outputText) return;
 
     const country1 = countryInput.value.trim();
-    const country2 = countryInput2 ? countryInput2.value.trim() : '';
+    let country2 = countryInput2 ? countryInput2.value.trim() : '';
     const segment1 = marketSegmentInput.value.trim();
-    const segment2 = marketSegmentInput2 ? marketSegmentInput2.value.trim() : '';
+    let segment2 = marketSegmentInput2 ? marketSegmentInput2.value.trim() : '';
+
+    // If second section is hidden, ignore country2/segment2
+    if (secondSection && secondSection.classList.contains('d-none')) {
+        country2 = '';
+        segment2 = '';
+    }
 
     const boxes = cityList.querySelectorAll("input[type='checkbox']");
     const labels = cityList.querySelectorAll(".form-check-label");
@@ -119,22 +126,25 @@ function updateGeneratedMessage() {
     // Build message
     let message = `Hi, I have finished collecting company names and emails in ${cityText}, ${country1} for ${segment1}. `;
 
-    // If Country 2 or Segment 2 is filled, override the next collection info
     if (country2 || segment2) {
         const nextCountry = country2 || country1;
         const nextSegment = segment2 || segment1;
-        message += `I will start collecting in ${nextCountry} for ${nextSegment} now.`;
+
+        if (segment2) {
+            message += `I will start collecting in ${nextCountry} for ${nextSegment} now.`;
+        } else {
+            message += `I will start collecting in ${nextCountry} now.`;
+        }
     } else if (nextCityText) {
-        // Default behavior: next city in list
         message += `I will start collecting in ${nextCityText}, ${country1} now.`;
     }
 
     message += `\n\n- ${username}`;
     outputText.value = message;
 
-    // Update progress bar
     updateProgress(boxes);
 }
+
 
 
 /**
